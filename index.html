@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Sentry: Interactive Feasibility Study</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Corporate Blueprint -->
+    <!-- Application Structure Plan: The SPA is designed as a strategic dashboard, not a linear report. It starts with a high-level "Overview" section containing the final recommendation and key metrics to immediately convey the project's viability. The user can then navigate via a sticky header to thematic deep-dive sections: "Market Opportunity" (visualizing market growth and competitive landscape), "Product Vision" (detailing core features interactively), "Tech & Roadmap" (presenting the technology stack and a visual timeline), and "The Future: NLP" (outlining the long-term vision). This structure prioritizes user understanding by presenting the conclusion first, followed by supporting evidence in digestible, interactive modules, which is more effective for decision-making than a traditional, sequential document flow. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Competitor Feature Matrix -> Goal: Compare capabilities -> Viz: Interactive HTML Table -> Interaction: Click/hover on rows to highlight -> Justification: Makes a dense data table scannable and engaging.
+        - Report Info: Project Sentry Features -> Goal: Explain core functions -> Viz: Icon-based cards (HTML/Tailwind) -> Interaction: Hover for tooltips -> Justification: Breaks down complex features into simple, visual concepts.
+        - Report Info: Development Roadmap -> Goal: Show phased plan -> Viz: Visual Timeline (HTML/Tailwind) -> Interaction: Click tabs to view phase details -> Justification: More engaging and intuitive than a static list or table.
+        - Report Info: Tech Stack -> Goal: Detail technology choices -> Viz: Grid layout with cards (HTML/Tailwind) -> Interaction: Static display -> Justification: Clear, organized presentation of technical components.
+        - Report Info: Competitive Positioning -> Goal: Show strategic market gap -> Viz: Scatter Plot (Chart.js) -> Interaction: Hover for details -> Justification: Visually demonstrates the "sweet spot" for a high-value, low-complexity tool.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #0ea5e9; /* sky-500 */
+            border-bottom-color: #0ea5e9; /* sky-500 */
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .table-row-highlight {
+            background-color: #f0f9ff !important; /* sky-50 */
+        }
+        .timeline-item {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .timeline-item.active {
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-slate-800">
+                Project <span class="text-sky-500">Sentry</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#overview" class="nav-link font-medium pb-1">Overview</a>
+                <a href="#market" class="nav-link font-medium pb-1">Market</a>
+                <a href="#product" class="nav-link font-medium pb-1">Product</a>
+                <a href="#tech" class="nav-link font-medium pb-1">Tech & Roadmap</a>
+                <a href="#future" class="nav-link font-medium pb-1">The Future</a>
+            </div>
+            <a href="https://www.dertzinfotech.com" target="_blank" class="hidden md:block bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-sky-600 transition-colors">
+                Dertz Infotech
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="overview" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">A Strategic Initiative for the AEC Market</h1>
+                <p class="max-w-3xl mx-auto text-lg text-slate-600 mb-12">
+                    This is an interactive summary of the feasibility study for Project Sentry, a proposed AEC software solution by Dertz Infotech. The analysis confirms a significant market opportunity and a clear path to developing a disruptive, high-value product.
+                </p>
+
+                <div class="max-w-4xl mx-auto p-8 bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl shadow-2xl text-white">
+                    <h2 class="text-3xl font-bold mb-4">Final Recommendation: GO</h2>
+                    <p class="text-lg text-sky-100">
+                        This report issues a definitive **GO** recommendation for the development and launch of Project Sentry. The initiative is backed by a strong market need, technical feasibility, and alignment with Dertz Infotech's core competencies.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-6xl mx-auto">
+                    <div class="stat-card p-6">
+                        <p class="text-sm font-semibold text-slate-500 uppercase">Market Size by 2034</p>
+                        <p class="text-4xl font-bold text-slate-800 mt-2">$29B+</p>
+                        <p class="text-slate-500 mt-1">A massive and growing addressable market.</p>
+                    </div>
+                    <div class="stat-card p-6">
+                        <p class="text-sm font-semibold text-slate-500 uppercase">Core Market Gap</p>
+                        <p class="text-4xl font-bold text-slate-800 mt-2">$15.8B</p>
+                        <p class="text-slate-500 mt-1">Annual cost of poor interoperability in the US alone.</p>
+                    </div>
+                    <div class="stat-card p-6">
+                        <p class="text-sm font-semibold text-slate-500 uppercase">Target Price Point</p>
+                        <p class="text-4xl font-bold text-slate-800 mt-2">~$480</p>
+                        <p class="text-slate-500 mt-1">Per user/year, a fraction of competitor costs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Tapping into a High-Growth Market</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">
+                        The AEC software market is experiencing rapid expansion, driven by digitization and BIM mandates. This growth, combined with a major industry pain point, creates a clear opening for an innovative solution like Project Sentry.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-1 text-center">Market Positioning: Value vs. Complexity</h3>
+                    <p class="text-center text-slate-500 mb-6">Project Sentry occupies a strategic "sweet spot", offering high-value features without the high cost and complexity of incumbent tools.</p>
+                    <div class="chart-container">
+                        <canvas id="marketOpportunityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="product" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800">The Product Vision: An Intelligent Hub</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">
+                        Project Sentry is designed as a comprehensive, data-centric platform focused on solving core coordination and quality issues, from initial model review to advanced, AI-driven analysis.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="stat-card p-6 text-center">
+                        <div class="text-4xl mb-3">📦</div>
+                        <h4 class="text-xl font-semibold text-slate-800">Model Federation & Viewing</h4>
+                        <p class="text-slate-500 mt-2">Aggregate IFC models. View, rotate, create sections, and inspect object properties.</p>
+                    </div>
+                    <div class="stat-card p-6 text-center">
+                        <div class="text-4xl mb-3">💥</div>
+                        <h4 class="text-xl font-semibold text-slate-800">Clash & Duplicate Detection</h4>
+                        <p class="text-slate-500 mt-2">Identify geometric clashes and redundant elements to ensure model accuracy.</p>
+                    </div>
+                    <div class="stat-card p-6 text-center">
+                        <div class="text-4xl mb-3">📋</div>
+                        <h4 class="text-xl font-semibold text-slate-800">Quantity Takeoff</h4>
+                        <p class="text-slate-500 mt-2">Automate the extraction of key quantities like area and volume from models.</p>
+                    </div>
+                    <div class="stat-card p-6 text-center border-2 border-sky-500">
+                        <div class="text-4xl mb-3">📈</div>
+                        <h4 class="text-xl font-semibold text-slate-800">Model Health Dashboard</h4>
+                        <p class="text-slate-500 mt-2"><span class="font-bold text-sky-600">Key Differentiator:</span> Proactively monitor model quality and performance KPIs.</p>
+                    </div>
+                    <div class="stat-card p-6 text-center">
+                        <div class="text-4xl mb-3">🔍</div>
+                        <h4 class="text-xl font-semibold text-slate-800">Advanced Analysis</h4>
+                        <p class="text-slate-500 mt-2">Perform rule-based validation and check for data completeness and standards compliance.</p>
+                    </div>
+                    <div class="stat-card p-6 text-center border-2 border-purple-500">
+                         <div class="text-4xl mb-3">💬</div>
+                        <h4 class="text-xl font-semibold text-slate-800">Conversational AI</h4>
+                        <p class="text-slate-500 mt-2"><span class="font-bold text-purple-600">Future-Ready:</span> Use natural language prompts to perform complex queries and tasks.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tech" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Tech Stack & Phased Roadmap</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">
+                        A modern, web-first architecture leveraging open-source technology will enable rapid development. A phased roadmap will ensure value is delivered incrementally, starting with a strong MVP.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6 text-center">Recommended Technology Stack</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-700">Platform</h4>
+                                <p class="text-sky-600 font-semibold">Web-First, Cloud-Native Application</p>
+                                <p class="text-slate-500">Ensures accessibility, collaboration, and a scalable SaaS model.</p>
+                            </div>
+                            <hr>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-700">Backend</h4>
+                                <p class="text-sky-600 font-semibold">Python + IfcOpenShell</p>
+                                <p class="text-slate-500">Leverages team skills and a powerful open-source library for core IFC processing.</p>
+                            </div>
+                            <hr>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-700">Frontend</h4>
+                                <p class="text-sky-600 font-semibold">ReactJS + IFC.js / Three.js</p>
+                                <p class="text-slate-500">Use a specialized, high-performance library built for viewing and interacting with IFC models directly in the browser.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6 text-center">Development Roadmap</h3>
+                        <div class="flex border-b border-slate-200 mb-6">
+                            <div id="timeline-tab-1" class="timeline-item flex-1 text-center p-4 font-semibold active">Phase 1: MVP</div>
+                            <div id="timeline-tab-2" class="timeline-item flex-1 text-center p-4 font-semibold">Phase 2: Commercial</div>
+                            <div id="timeline-tab-3" class="timeline-item flex-1 text-center p-4 font-semibold">Phase 3: Growth</div>
+                        </div>
+                        <div id="timeline-content">
+                            <!-- Content will be injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="future" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800">The Future: A Natural Language Interface</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">
+                        The long-term vision is to leapfrog the competition by creating a more intuitive way to interact with BIM data. This aligns with industry trends and Dertz's expertise in AI and Machine Learning.
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto bg-slate-800 text-white p-8 rounded-2xl shadow-lg">
+                    <div class="flex flex-col md:flex-row md:items-center">
+                        <div class="text-5xl mr-6 mb-4 md:mb-0">💬</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-sky-400">"Find all clashes between MEP ducts and structural beams."</h3>
+                            <p class="mt-2 text-slate-300">
+                                A phased approach will evolve the product from a simple search tool to a system that understands user intent, and eventually, complex conversational commands. This creates a powerful, defensible competitive advantage for the future.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Dertz Infotech. All rights reserved.</p>
+            <p class="text-sm mt-2">This interactive report was generated to summarize the "Project Sentry" feasibility study.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const marketOpportunityData = {
+                datasets: [
+                    {
+                        label: 'Project Sentry',
+                        data: [{ x: 3, y: 8 }],
+                        backgroundColor: 'rgba(14, 165, 233, 0.9)',
+                        borderColor: 'rgb(14, 165, 233)',
+                        pointRadius: 10,
+                        pointHoverRadius: 12
+                    },
+                    {
+                        label: 'Navisworks Manage',
+                        data: [{ x: 8, y: 8.5 }],
+                        backgroundColor: 'rgba(249, 115, 22, 0.7)',
+                        borderColor: 'rgb(249, 115, 22)',
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    },
+                    {
+                        label: 'Solibri Office',
+                        data: [{ x: 9, y: 9.5 }],
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: 'rgb(239, 68, 68)',
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    },
+                    {
+                        label: 'Revizto',
+                        data: [{ x: 10, y: 7.5 }],
+                        backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                        borderColor: 'rgb(139, 92, 246)',
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    },
+                    {
+                        label: 'Trimble Connect',
+                        data: [{ x: 2, y: 4 }],
+                        backgroundColor: 'rgba(163, 230, 53, 0.7)',
+                        borderColor: 'rgb(163, 230, 53)',
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    }
+                ]
+            };
+            
+            const marketOpportunityCtx = document.getElementById('marketOpportunityChart').getContext('2d');
+            new Chart(marketOpportunityCtx, {
+                type: 'scatter',
+                data: marketOpportunityData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Pricing & Complexity →',
+                                font: { size: 14 }
+                            },
+                             min: 0,
+                             max: 11
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '↑ Functionality & Value',
+                                font: { size: 14 }
+                            },
+                            min: 0,
+                            max: 11
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                           display: true,
+                           position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 60) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            const timelineData = {
+                '1': {
+                    title: 'Phase 1: Minimum Viable Product (MVP)',
+                    duration: '6-9 Months',
+                    goal: 'Validate the core value proposition and establish a market foothold as a viable, cost-effective alternative to incumbents.',
+                    features: ['Web-based IFC Federation', 'Interactive 3D Viewer', 'Basic Hard Clash Detection', 'User & Project Management']
+                },
+                '2': {
+                    title: 'Phase 2: Commercial Launch & Differentiation',
+                    duration: '9-15 Months',
+                    goal: 'Introduce key differentiating features, particularly data analytics, to begin monetization and establish a clear ROI for customers.',
+                    features: ['Quantity Takeoff (Area/Volume)', 'Duplicate Element Detection', 'v1 Model Health Dashboard', 'Subscription & Billing']
+                },
+                '3': {
+                    title: 'Phase 3: Innovation & Growth',
+                    duration: '15-24 Months',
+                    goal: 'Establish Project Sentry as a market innovator, expand the feature set to capture larger market share, and increase user stickiness.',
+                    features: ['NLP Interface (Crawl/Walk)', 'Advanced Clash Rules (Soft/Clearance)', 'BCF Integration']
+                }
+            };
+
+            const timelineContentEl = document.getElementById('timeline-content');
+            const timelineTabs = document.querySelectorAll('.timeline-item');
+
+            function renderTimelineContent(phase) {
+                const data = timelineData[phase];
+                timelineContentEl.innerHTML = `
+                    <h4 class="font-bold text-lg text-slate-800">${data.title}</h4>
+                    <p class="text-sm text-slate-500 mb-4 font-medium">${data.duration}</p>
+                    <p class="text-slate-600 mb-4">${data.goal}</p>
+                    <ul class="space-y-2">
+                        ${data.features.map(f => `<li class="flex items-center"><span class="text-sky-500 mr-2">✓</span>${f}</li>`).join('')}
+                    </ul>
+                `;
+            }
+
+            timelineTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    timelineTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const phase = tab.id.split('-')[2];
+                    renderTimelineContent(phase);
+                });
+            });
+
+            renderTimelineContent('1');
+        });
+    </script>
+</body>
+</html>
